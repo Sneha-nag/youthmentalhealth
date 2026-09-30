@@ -52,13 +52,15 @@ def risk_card(
     *,
     scale: float = 1.0,
     margin_bottom: int = 0,
+    max_width: str | None = None,
 ) -> str:
     """Build the color-coded risk tier card.
 
     Args:
         probability: Predicted probability of a diagnosed condition.
         scale: Multiplier for the card's type and padding. ``0.7`` is 30% smaller.
-        margin_bottom: Space, in pixels, between the card and whatever follows it.
+        margin_bottom: Space, in pixels, below the card.
+        max_width: Optional CSS max-width, such as ``"100%"``.
 
     Returns:
         HTML for a low, moderate, or high risk badge with a meter.
@@ -69,10 +71,11 @@ def risk_card(
     def px(value: float) -> int:
         return max(1, round(value * scale))
 
+    width_rule = f"max-width:{max_width};" if max_width else ""
     return (
         f"<div style=\"border:1px solid {fill};background:{background};color:{text};"
         f"border-radius:{px(16)}px;padding:{px(22)}px {px(24)}px;margin-bottom:{margin_bottom}px;"
-        "max-width:70%;\">"
+        f"{width_rule}\">"
         f"<div style=\"font-size:{px(13)}px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;\">{tier}</div>"
         f"<div style=\"font-size:{px(52)}px;font-weight:700;line-height:1.05;margin:{px(4)}px 0 {px(12)}px;\">{percent:.1f}%</div>"
         f"<div style=\"height:{px(12)}px;border-radius:999px;background:rgba(0,0,0,0.08);overflow:hidden;\">"
@@ -193,6 +196,7 @@ def score_youth(
     *,
     card_scale: float = 1.0,
     card_margin_bottom: int = 0,
+    card_max_width: str | None = None,
     figsize: tuple[float, float] = (7.2, 4.8),
     label_size: int = 10,
 ) -> tuple[str, plt.Figure]:
@@ -222,7 +226,12 @@ def score_youth(
         }
     )
     return (
-        risk_card(result.probability, scale=card_scale, margin_bottom=card_margin_bottom),
+        risk_card(
+            result.probability,
+            scale=card_scale,
+            margin_bottom=card_margin_bottom,
+            max_width=card_max_width,
+        ),
         shap_waterfall(result, figsize=figsize, label_size=label_size),
     )
 

@@ -44,6 +44,8 @@ with left:
             index=FAMILY_LEVELS.index("two_parent_married"),
             format_func=lambda level: FAMILY_LABELS[level],
         )
+
+with right:
     with st.expander("Adverse childhood experiences", expanded=True):
         divorced = st.radio(
             "Parent or guardian divorced or separated",
@@ -74,15 +76,16 @@ card_html, figure = score_youth(
     race,
     unanswered,
     card_scale=0.7,
-    card_margin_bottom=48,
-    figsize=(14, 6.4),
-    label_size=14,
+    card_max_width="100%",
+    figsize=(11, 5.6),
+    label_size=13,
 )
 
-with right:
+card_column, chart_column = st.columns([1, 2.4], gap="large")
+with card_column:
     st.markdown(card_html, unsafe_allow_html=True)
-
-st.pyplot(figure, clear_figure=True, width="stretch")
+with chart_column:
+    st.pyplot(figure, clear_figure=True, width="stretch")
 st.markdown(MODEL_PATTERNS)
 
 plt.close("all")
