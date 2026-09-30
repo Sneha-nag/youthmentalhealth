@@ -176,7 +176,7 @@ def shap_waterfall(
     return figure
 
 
-MODEL_PATTERNS = """### Patterns in this model
+MODEL_PATTERNS = """### Patterns noticed
 - Neighborhood violence raises the chance, often by a large amount.
 - A parent or guardian who divorced or separated raises the chance.
 - Unfair treatment because of race or ethnicity raises the chance.
