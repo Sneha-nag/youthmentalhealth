@@ -1,0 +1,10 @@
+# The NSCH topical file is larger than GitHub's 100MB limit.
+data/raw/*.sas7bdat
+
+# Local experiment tracking
+mlruns/
+mlflow.db
+
+__pycache__/
+*.pyc
+.gradio/

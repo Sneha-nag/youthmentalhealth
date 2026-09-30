@@ -1,0 +1,7 @@
+Plaintext
+# Project Context: Youth Mental Health Risk Model
+- Prefer modular Python architecture: keep data loading (data/), modeling (models/), and serving (api/) separate.
+- Ensure all data transformations are vectorized using Pandas/NumPy (no explicit loops over rows).
+- Always include type hints and clear docstrings for public functions.
+- Log ML experiments using MLflow tracking rather than plain print statements.
+- Keep ML models explainable by returning SHAP values alongside prediction probabilities.

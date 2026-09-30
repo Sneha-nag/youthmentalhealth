@@ -1,0 +1,22 @@
+{
+  "features": [
+    "SC_AGE_YEARS",
+    "FPL",
+    "family_structure",
+    "ace_parent_divorced",
+    "ace_victim_of_violence",
+    "ace_treated_unfairly_race",
+    "ace_items_missing"
+  ],
+  "family_structure_levels": [
+    "two_parent_married",
+    "two_parent_unmarried",
+    "single_parent",
+    "grandparent_household",
+    "other",
+    "missing"
+  ],
+  "target": "has_mental_health_condition",
+  "weight": "FWC",
+  "decision_threshold": 0.5
+}
