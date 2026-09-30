@@ -16,6 +16,26 @@ from src.models.schema import FAMILY_LEVELS
 st.set_page_config(page_title="Youth mental health risk", layout="wide")
 st.markdown(
     """
+<style>
+div.st-key-questions {
+    background: #f4efe6 !important;
+    border: 1px solid #e3d9c8;
+    border-radius: 18px;
+    padding: 0.85rem 1.15rem 0.35rem;
+    margin-bottom: 1rem;
+}
+div.st-key-results {
+    background: #e7eef6 !important;
+    border: 1px solid #d2deea;
+    border-radius: 18px;
+    padding: 0.9rem 1.15rem 0.25rem;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    """
 ## Youth mental health risk
 Estimate the probability of a depression, anxiety, or behavior-problem
 diagnosis for a youth age 12–17, using the 2024 National Survey of
@@ -25,47 +45,48 @@ answer moves that chance.
 """
 )
 
-left, right = st.columns(2, gap="large")
-
-with left:
-    with st.expander("Demographics and poverty", expanded=True):
-        age = st.slider("Age (years)", min_value=12, max_value=17, value=15, step=1)
-        poverty = st.slider(
-            "Family poverty level (percent of the federal poverty level)",
-            min_value=50,
-            max_value=400,
-            value=200,
-            step=1,
-        )
-    with st.expander("Family structure", expanded=True):
-        family = st.selectbox(
-            "Household type",
-            options=FAMILY_LEVELS,
-            index=FAMILY_LEVELS.index("two_parent_married"),
-            format_func=lambda level: FAMILY_LABELS[level],
-        )
-
-with right:
-    with st.expander("Adverse childhood experiences", expanded=True):
-        divorced = st.radio(
-            "Parent or guardian divorced or separated",
-            ACE_CHOICES,
-            index=1,
-            horizontal=True,
-        )
-        violence = st.radio(
-            "Victim of violence or witnessed neighborhood violence",
-            ACE_CHOICES,
-            index=1,
-            horizontal=True,
-        )
-        race = st.radio(
-            "Treated unfairly because of race or ethnicity",
-            ACE_CHOICES,
-            index=1,
-            horizontal=True,
-        )
-        unanswered = st.slider("Unanswered ACE items", min_value=0, max_value=10, value=0, step=1)
+with st.container(key="questions"):
+    left, right = st.columns(2, gap="large")
+    with left:
+        with st.expander("Demographics and poverty", expanded=True):
+            age = st.slider("Age (years)", min_value=12, max_value=17, value=15, step=1)
+            poverty = st.slider(
+                "Family poverty level (percent of the federal poverty level)",
+                min_value=50,
+                max_value=400,
+                value=200,
+                step=1,
+            )
+        with st.expander("Family structure", expanded=True):
+            family = st.selectbox(
+                "Household type",
+                options=FAMILY_LEVELS,
+                index=FAMILY_LEVELS.index("two_parent_married"),
+                format_func=lambda level: FAMILY_LABELS[level],
+            )
+    with right:
+        with st.expander("Adverse childhood experiences", expanded=True):
+            divorced = st.radio(
+                "Parent or guardian divorced or separated",
+                ACE_CHOICES,
+                index=1,
+                horizontal=True,
+            )
+            violence = st.radio(
+                "Victim of violence or witnessed neighborhood violence",
+                ACE_CHOICES,
+                index=1,
+                horizontal=True,
+            )
+            race = st.radio(
+                "Treated unfairly because of race or ethnicity",
+                ACE_CHOICES,
+                index=1,
+                horizontal=True,
+            )
+            unanswered = st.slider(
+                "Unanswered ACE items", min_value=0, max_value=10, value=0, step=1
+            )
 
 card_html, figure = score_youth(
     age,
@@ -81,11 +102,12 @@ card_html, figure = score_youth(
     label_size=13,
 )
 
-card_column, chart_column = st.columns([1.25, 2.7], gap="small")
-with card_column:
-    st.markdown(card_html, unsafe_allow_html=True)
-with chart_column:
-    st.pyplot(figure, clear_figure=True, width="stretch")
-st.markdown(MODEL_PATTERNS)
+with st.container(key="results"):
+    card_column, chart_column = st.columns([1.25, 2.7], gap="small")
+    with card_column:
+        st.markdown(card_html, unsafe_allow_html=True)
+    with chart_column:
+        st.pyplot(figure, clear_figure=True, width="stretch")
+    st.markdown(MODEL_PATTERNS)
 
 plt.close("all")
