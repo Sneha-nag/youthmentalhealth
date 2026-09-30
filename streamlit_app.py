@@ -5,7 +5,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import streamlit as st
 
-from app.gradio_app import (
+from app.scoring_view import (
     ACE_CHOICES,
     FAMILY_LABELS,
     MODEL_PATTERNS,

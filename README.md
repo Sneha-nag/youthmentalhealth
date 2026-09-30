@@ -13,7 +13,7 @@ pinned: false
 
 A machine learning app that estimates the chance a youth age 12–17 has ever been told they have depression, anxiety, or a behavior problem. The score comes from the 2024 National Survey of Children's Health. It is a survey model for explanation, not a clinical assessment.
 
-[Try me](https://huggingface.co/spaces/snagabhairava/youthmentalhealth)
+[Try me](https://youthmentalhealth-qhkbukwxh5vb9nrecglj9c.streamlit.app/)
 
 ![How a score is produced](docs/architecture.jpg)
 
@@ -86,9 +86,11 @@ youthmentalhealth/
 Python 3.12. From the project root:
 
 ```powershell
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements-train.txt
 streamlit run streamlit_app.py
 ```
+
+`requirements.txt` is enough to score. `requirements-train.txt` adds ingest, training, the API, and the Gradio UI.
 
 The same score is also available with `python -m app.gradio_app`.
 
