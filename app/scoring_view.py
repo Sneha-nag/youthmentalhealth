@@ -47,25 +47,37 @@ def _risk_tier(probability: float) -> tuple[str, str, str, str]:
     return "High risk", "#9f1239", "#e11d48", "#ffe4e6"
 
 
-def risk_card(probability: float) -> str:
+def risk_card(
+    probability: float,
+    *,
+    scale: float = 1.0,
+    margin_bottom: int = 0,
+) -> str:
     """Build the color-coded risk tier card.
 
     Args:
         probability: Predicted probability of a diagnosed condition.
+        scale: Multiplier for the card's type and padding. ``0.7`` is 30% smaller.
+        margin_bottom: Space, in pixels, between the card and whatever follows it.
 
     Returns:
         HTML for a low, moderate, or high risk badge with a meter.
     """
     tier, text, fill, background = _risk_tier(probability)
     percent = 100 * probability
+
+    def px(value: float) -> int:
+        return max(1, round(value * scale))
+
     return (
         f"<div style=\"border:1px solid {fill};background:{background};color:{text};"
-        "border-radius:16px;padding:22px 24px;\">"
-        f"<div style=\"font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;\">{tier}</div>"
-        f"<div style=\"font-size:52px;font-weight:700;line-height:1.05;margin:4px 0 12px;\">{percent:.1f}%</div>"
-        "<div style=\"height:12px;border-radius:999px;background:rgba(0,0,0,0.08);overflow:hidden;\">"
-        f"<div style=\"width:{percent:.1f}%;height:12px;background:{fill};\"></div></div>"
-        "<div style=\"margin-top:12px;font-size:14px;line-height:1.4;\">"
+        f"border-radius:{px(16)}px;padding:{px(22)}px {px(24)}px;margin-bottom:{margin_bottom}px;"
+        "max-width:70%;\">"
+        f"<div style=\"font-size:{px(13)}px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;\">{tier}</div>"
+        f"<div style=\"font-size:{px(52)}px;font-weight:700;line-height:1.05;margin:{px(4)}px 0 {px(12)}px;\">{percent:.1f}%</div>"
+        f"<div style=\"height:{px(12)}px;border-radius:999px;background:rgba(0,0,0,0.08);overflow:hidden;\">"
+        f"<div style=\"width:{percent:.1f}%;height:{px(12)}px;background:{fill};\"></div></div>"
+        f"<div style=\"margin-top:{px(12)}px;font-size:{px(14)}px;line-height:1.4;\">"
         "Probability of a depression, anxiety, or behavior-problem diagnosis.</div></div>"
     )
 
@@ -114,7 +126,12 @@ def _percentage_steps(result: PredictionExplanation) -> list[tuple[ShapContribut
     return steps
 
 
-def shap_waterfall(result: PredictionExplanation) -> plt.Figure:
+def shap_waterfall(
+    result: PredictionExplanation,
+    *,
+    figsize: tuple[float, float] = (7.2, 4.8),
+    label_size: int = 10,
+) -> plt.Figure:
     """Draw a SHAP waterfall in percentage points.
 
     Each bar is the change in the chance of a diagnosis after that answer.
@@ -137,7 +154,7 @@ def shap_waterfall(result: PredictionExplanation) -> plt.Figure:
         deltas.append(delta)
         chance += delta
 
-    figure, axis = plt.subplots(figsize=(7.2, 4.8))
+    figure, axis = plt.subplots(figsize=figsize)
     for index, delta in enumerate(deltas):
         color = "#e11d48" if delta > 0 else "#2563eb"
         axis.barh(index, delta, left=starts[index], color=color, height=0.62, zorder=2)
@@ -146,11 +163,13 @@ def shap_waterfall(result: PredictionExplanation) -> plt.Figure:
             axis.plot([edge, edge], [index + 0.31, index + 0.69], color="#9ca3af", linewidth=0.8, zorder=1)
     axis.axvline(100 * _chance(result.base_value), color="#6b7280", linestyle="--", linewidth=1)
     axis.set_yticks(range(len(labels)))
-    axis.set_yticklabels(labels)
+    axis.set_yticklabels(labels, fontsize=label_size)
+    axis.tick_params(axis="x", labelsize=label_size)
     axis.xaxis.set_major_formatter(plt.FuncFormatter(lambda value, _position: f"{value:.0f}%"))
-    axis.set_xlabel("Chance of a diagnosis")
-    axis.set_title("Blue lowers the chance. Red raises it.")
-    figure.subplots_adjust(left=0.42, right=0.98, top=0.88, bottom=0.16)
+    axis.set_xlabel("Chance of a diagnosis", fontsize=label_size + 2)
+    axis.set_title("Blue lowers the chance. Red raises it.", fontsize=label_size + 3)
+    left_margin = 0.26 if figsize[0] >= 12 else 0.42
+    figure.subplots_adjust(left=left_margin, right=0.96, top=0.9, bottom=0.16)
     return figure
 
 
@@ -171,6 +190,11 @@ def score_youth(
     victim_of_violence: str,
     treated_unfairly_race: str,
     ace_items_missing: float,
+    *,
+    card_scale: float = 1.0,
+    card_margin_bottom: int = 0,
+    figsize: tuple[float, float] = (7.2, 4.8),
+    label_size: int = 10,
 ) -> tuple[str, plt.Figure]:
     """Score one form submission and draw its SHAP waterfall.
 
@@ -197,6 +221,9 @@ def score_youth(
             "ace_items_missing": int(ace_items_missing),
         }
     )
-    return risk_card(result.probability), shap_waterfall(result)
+    return (
+        risk_card(result.probability, scale=card_scale, margin_bottom=card_margin_bottom),
+        shap_waterfall(result, figsize=figsize, label_size=label_size),
+    )
 
 

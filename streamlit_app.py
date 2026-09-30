@@ -65,11 +65,24 @@ with left:
         )
         unanswered = st.slider("Unanswered ACE items", min_value=0, max_value=10, value=0, step=1)
 
-card_html, figure = score_youth(age, poverty, family, divorced, violence, race, unanswered)
+card_html, figure = score_youth(
+    age,
+    poverty,
+    family,
+    divorced,
+    violence,
+    race,
+    unanswered,
+    card_scale=0.7,
+    card_margin_bottom=48,
+    figsize=(14, 6.4),
+    label_size=14,
+)
 
 with right:
     st.markdown(card_html, unsafe_allow_html=True)
-    st.pyplot(figure, clear_figure=True)
-    st.markdown(MODEL_PATTERNS)
+
+st.pyplot(figure, clear_figure=True, width="stretch")
+st.markdown(MODEL_PATTERNS)
 
 plt.close("all")
