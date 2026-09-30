@@ -209,8 +209,10 @@ def build_demo() -> gr.Blocks:
         gr.Markdown(
             "## Youth mental health risk\n"
             "Estimate the probability of a depression, anxiety, or behavior-problem "
-            "diagnosis for a youth age 12–17. The waterfall starts at the average "
-            "youth's chance and shows how each answer moves that chance."
+            "diagnosis for a youth age 12–17, using the 2024 National Survey of "
+            "Children's Health. This is a survey model, not a clinical assessment. "
+            "The waterfall starts at the average youth's chance and shows how each "
+            "answer moves that chance."
         )
         with gr.Row():
             with gr.Column(scale=1):
