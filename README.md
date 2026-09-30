@@ -13,7 +13,7 @@ pinned: false
 
 A machine learning app that estimates the chance a youth age 12–17 has ever been told they have depression, anxiety, or a behavior problem. The score comes from the 2024 National Survey of Children's Health. It is a survey model for explanation, not a clinical assessment.
 
-[Try me](https://huggingface.co/spaces/Sneha-nag/youthmentalhealth)
+[Try me](https://huggingface.co/spaces/snagabhairava/youthmentalhealth)
 
 ![How a score is produced](docs/architecture.jpg)
 
@@ -63,7 +63,8 @@ The raw SAS file is about 179MB and is not in Git. Scoring uses `models/xgb_yout
 
 ```
 youthmentalhealth/
-  app/gradio_app.py          Hugging Face / local Gradio UI
+  streamlit_app.py           Public Streamlit app
+  app/gradio_app.py          Local Gradio UI
   src/data_pipeline/ingest.py
   src/models/train.py        XGBoost, MLflow, SHAP summary
   src/models/predict.py
@@ -76,7 +77,7 @@ youthmentalhealth/
 ## Technologies
 
 - **Machine learning:** XGBoost, scikit-learn, SHAP, MLflow
-- **Live demo:** Hugging Face Spaces, Gradio
+- **Live demo:** Streamlit, Gradio
 - **API:** FastAPI, uvicorn
 - **Data:** pandas, pyreadstat, Parquet
 
@@ -86,8 +87,10 @@ Python 3.12. From the project root:
 
 ```powershell
 pip install -r requirements.txt
-python -m app.gradio_app
+streamlit run streamlit_app.py
 ```
+
+The same score is also available with `python -m app.gradio_app`.
 
 The API:
 

@@ -12,3 +12,4 @@ matplotlib>=3.8
 fastapi>=0.115
 uvicorn>=0.34
 gradio>=5.0
+streamlit>=1.40
