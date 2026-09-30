@@ -71,7 +71,7 @@ def risk_card(
     def px(value: float) -> int:
         return max(1, round(value * scale))
 
-    width_rule = f"max-width:{max_width};" if max_width else ""
+    width_rule = f"width:{max_width};max-width:{max_width};" if max_width else ""
     return (
         f"<div style=\"border:1px solid {fill};background:{background};color:{text};"
         f"border-radius:{px(16)}px;padding:{px(22)}px {px(24)}px;margin-bottom:{margin_bottom}px;"

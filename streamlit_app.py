@@ -75,13 +75,13 @@ card_html, figure = score_youth(
     violence,
     race,
     unanswered,
-    card_scale=0.7,
+    card_scale=0.78,
     card_max_width="100%",
-    figsize=(11, 5.6),
+    figsize=(12, 5.6),
     label_size=13,
 )
 
-card_column, chart_column = st.columns([1, 2.4], gap="large")
+card_column, chart_column = st.columns([1.25, 2.7], gap="small")
 with card_column:
     st.markdown(card_html, unsafe_allow_html=True)
 with chart_column:
