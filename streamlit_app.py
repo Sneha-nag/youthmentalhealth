@@ -2,15 +2,22 @@
 
 from __future__ import annotations
 
+import importlib
+import traceback
+
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import streamlit as st
 
-from app.scoring_view import (
-    ACE_CHOICES,
-    FAMILY_LABELS,
-    MODEL_PATTERNS,
-    score_youth,
-)
+import app.scoring_view as scoring_view
+
+scoring_view = importlib.reload(scoring_view)
+ACE_CHOICES = scoring_view.ACE_CHOICES
+FAMILY_LABELS = scoring_view.FAMILY_LABELS
+MODEL_PATTERNS = scoring_view.MODEL_PATTERNS
+score_youth = scoring_view.score_youth
 from src.models.schema import FAMILY_LEVELS
 
 st.set_page_config(page_title="Youth mental health risk", layout="wide")
@@ -88,19 +95,24 @@ with st.container(key="questions"):
                 "Unanswered ACE items", min_value=0, max_value=10, value=0, step=1
             )
 
-card_html, figure = score_youth(
-    age,
-    poverty,
-    family,
-    divorced,
-    violence,
-    race,
-    unanswered,
-    card_scale=0.78,
-    card_max_width="100%",
-    figsize=(12, 5.6),
-    label_size=13,
-)
+try:
+    card_html, figure = score_youth(
+        age,
+        poverty,
+        family,
+        divorced,
+        violence,
+        race,
+        unanswered,
+        card_scale=0.78,
+        card_max_width="100%",
+        figsize=(12, 5.6),
+        label_size=13,
+    )
+except TypeError:
+    st.error("The score could not be calculated.")
+    st.code(traceback.format_exc())
+    st.stop()
 
 with st.container(key="results"):
     card_column, chart_column = st.columns([1.25, 2.7], gap="small")
